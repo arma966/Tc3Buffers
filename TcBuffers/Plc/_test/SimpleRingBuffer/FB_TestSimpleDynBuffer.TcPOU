@@ -24,14 +24,67 @@ VAR
 	nFillCyclesToDo : UDINT := nKbToFill/nFillPerCycle; // 10 mb 
 	nFillCycle 		: UDINT;
 	nErrors4 		: UDINT;
+	
+	//CheckInvalidInput
+	fbBufferTest5 : FB_SimpleRingBuffer;
+	ipBufferTest5 : I_SimpleDynBuffer := fbBufferTest2;
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[FillTenElements();
 OverflowOneElement();
 ResetAndUse();
-CheckMemoryLeaks();]]></ST>
+CheckMemoryLeaks();
+CheckInvalidInput();]]></ST>
     </Implementation>
+    <Method Name="CheckInvalidInput" Id="{2c74e69e-7436-46e2-8ad5-5137731e2251}">
+      <Declaration><![CDATA[METHOD CheckInvalidInput : REFERENCE TO FB_Test
+VAR
+	i 		: UDINT;
+	nGet : UDINT;
+
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('CheckInvalidInput');
+
+
+IF ipBufferTest5.Initialize(	nElementSize := 0,
+								nElementCapacity := 1) THEN
+	AssertTrue(FALSE, 'Failed init 0 element size');		
+END_IF;
+IF ipBufferTest5.Initialize(	nElementSize := 4,
+								nElementCapacity := 0) THEN
+	AssertTrue(FALSE, 'Failed init 0 capacity');		
+END_IF;
+IF NOT ipBufferTest5.Initialize(	nElementSize := 4,
+								nElementCapacity := 1) THEN
+	AssertTrue(FALSE, 'Failed init');		
+END_IF;
+
+IF ipBufferTest5.Push(ADR(i),0) THEN
+	AssertTrue(FALSE, 'Failed push size 0');		
+END_IF
+
+IF ipBufferTest5.Push(0,4) THEN
+	AssertTrue(FALSE, 'Failed push adr 0');		
+END_IF
+
+
+IF NOT ipBufferTest5.Push(ADR(i),4) THEN
+	AssertTrue(FALSE, 'Failed push legit data');		
+END_IF
+
+IF ipBufferTest5.Get(ADR(i),0) THEN
+	AssertTrue(FALSE, 'Failed get size 0');		
+END_IF
+IF ipBufferTest5.Get(0,4) THEN
+	AssertTrue(FALSE, 'Failed get adr 0');		
+END_IF
+
+TEST_FINISHED(); ]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="CheckMemoryLeaks" Id="{9e7794f2-a86d-4bd8-83a4-f798529c44ae}">
       <Declaration><![CDATA[METHOD CheckMemoryLeaks : REFERENCE TO FB_Test
 VAR
@@ -60,12 +113,14 @@ CASE nState4 OF
 											nElementCapacity := 1024*10) THEN
  			nErrors4 := nErrors4 +1;
 		END_IF;
+		nState4 := 1;			
 		
-		bIsEmpty := fbBufferTest4.Empty;
-		nReadCapacity := fbBufferTest4.Capacity;				
-		
+
+	1:
 		IF nFillCycle = nFillCyclesToDo THEN
 			nElementsToPush := nFillPerCycle + nOverflow;
+		ELSE
+			nElementsToPush := nFillPerCycle;
 		END_IF
 		FOR i := 1 TO nElementsToPush DO
 			stDataToInsert.nIndex := i;
@@ -75,7 +130,7 @@ CASE nState4 OF
 		END_FOR
 		nFillCycle := nFillCycle + 1;
 		IF nFillCycle >= nFillCyclesToDo THEN
-			nFillCycle := 0;
+			nFillCycle := 1;
 			nState4 := 10;
 		END_IF
 	10:
