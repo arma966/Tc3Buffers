@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <Itf Name="I_SimpleRingBuffer" Id="{fd58995c-697e-4543-845c-01cde0c2e23d}">
+    <Declaration><![CDATA[INTERFACE I_SimpleRingBuffer
+]]></Declaration>
+    <Property Name="Capacity" Id="{5b58f702-6a55-495f-a83d-744012e6a8ee}">
+      <Declaration><![CDATA[PROPERTY Capacity : UDINT]]></Declaration>
+      <Get Name="Get" Id="{3b5756e9-e9a2-4652-82bf-00f1f3d83ab7}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="Empty" Id="{b239db9b-99d4-4f03-a0ff-d25d96abed7d}">
+      <Declaration><![CDATA[PROPERTY Empty : bool]]></Declaration>
+      <Get Name="Get" Id="{7925a03b-0bd2-4973-b467-bc49c28f3737}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="Full" Id="{ad48ac34-18b1-49e9-ad9e-301be03d88f1}">
+      <Declaration><![CDATA[PROPERTY Full : bool]]></Declaration>
+      <Get Name="Get" Id="{bfdaac80-f18c-4dc3-a6be-c06bb5967e0f}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Method Name="Get" Id="{2f20915c-8993-4d85-96f8-b9ca4833bd4a}">
+      <Declaration><![CDATA[METHOD Get : BOOL
+VAR_INPUT
+	pDestination 	: pvoid;
+	cbSize 			: UDINT;
+END_VAR]]></Declaration>
+    </Method>
+    <Method Name="Initialize" Id="{8dd7480e-774e-4a50-aec3-693e6d4b7875}">
+      <Declaration><![CDATA[METHOD Initialize : BOOL
+VAR_INPUT
+	nElementSize 		: UDINT;
+	nElementCapacity 	: UDINT;
+END_VAR]]></Declaration>
+    </Method>
+    <Method Name="Push" Id="{9b3985ff-e758-4370-9340-d5c5930b4f22}">
+      <Declaration><![CDATA[METHOD Push : BOOL
+VAR_INPUT
+	pData : pvoid;
+	cbSize : UDINT;
+END_VAR]]></Declaration>
+    </Method>
+    <Method Name="Reset" Id="{452b8a46-2841-492b-adf5-ceb24cfbd834}">
+      <Declaration><![CDATA[METHOD Reset
+]]></Declaration>
+    </Method>
+    <Property Name="Size" Id="{0cc25b46-f5ba-492d-8e4d-2fb427096abf}">
+      <Declaration><![CDATA[PROPERTY Size : UDINT]]></Declaration>
+      <Get Name="Get" Id="{b6c05b82-461e-49b5-8a17-6b8d481fec30}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+  </Itf>
+</TcPlcObject>

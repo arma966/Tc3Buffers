@@ -5,19 +5,19 @@
 VAR 
 	// FillTenElements
 	fbBufferTest1 : FB_SimpleRingBuffer;
-	ipBufferTest1 : I_SimpleDynBuffer := fbBufferTest1;
+	ipBufferTest1 : I_SimpleRingBuffer := fbBufferTest1;
 	
 	//OverflowOneElement
 	fbBufferTest2 : FB_SimpleRingBuffer;
-	ipBufferTest2 : I_SimpleDynBuffer := fbBufferTest2;
+	ipBufferTest2 : I_SimpleRingBuffer := fbBufferTest2;
 	
 	//ResetAndUse
 	fbBufferTest3 : FB_SimpleRingBuffer;
-	ipBufferTest3 : I_SimpleDynBuffer := fbBufferTest2;
+	ipBufferTest3 : I_SimpleRingBuffer := fbBufferTest2;
 	
 	//CheckMemoryLeaks
 	fbBufferTest4 	: FB_SimpleRingBuffer;
-	ipBufferTest4 	: I_SimpleDynBuffer := fbBufferTest4;
+	ipBufferTest4 	: I_SimpleRingBuffer := fbBufferTest4;
 	nState4 		: UDINT;
 	nFillPerCycle 	: UDINT := 64;
 	nKbToFill 		: UDINT := 10*1024;
@@ -27,7 +27,7 @@ VAR
 	
 	//CheckInvalidInput
 	fbBufferTest5 : FB_SimpleRingBuffer;
-	ipBufferTest5 : I_SimpleDynBuffer := fbBufferTest2;
+	ipBufferTest5 : I_SimpleRingBuffer := fbBufferTest2;
 END_VAR
 ]]></Declaration>
     <Implementation>

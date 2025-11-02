@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1">
   <POU Name="FB_SimpleRingBuffer" Id="{e53ad98f-6173-4aef-913f-4694cd5f1a80}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK FB_SimpleRingBuffer implements I_SimpleDynBuffer
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_SimpleRingBuffer implements I_SimpleRingBuffer
 VAR
 	_pBuffer : POINTER TO BYTE;
 	_nTail : UDINT;
