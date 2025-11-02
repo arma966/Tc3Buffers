@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <POU Name="MAIN" Id="{7ced7848-7e71-4263-9269-881b93844670}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM MAIN
+VAR
+	nCounter 	: INT;
+	fbTestSimpleDynBuffer : FB_TestSimpleDynBuffer;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[nCounter := nCounter + 1;
+
+TcUnit.RUN();]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

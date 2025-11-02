@@ -1,0 +1,287 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <POU Name="FB_TestSimpleDynBuffer" Id="{2c04aca4-7d39-4a35-b21b-ffc49c050cdd}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_TestSimpleDynBuffer EXTENDS TcUnit.FB_TestSuite
+VAR 
+	// FillTenElements
+	fbBufferTest1 : FB_SimpleRingBuffer;
+	ipBufferTest1 : I_SimpleDynBuffer := fbBufferTest1;
+	
+	//OverflowOneElement
+	fbBufferTest2 : FB_SimpleRingBuffer;
+	ipBufferTest2 : I_SimpleDynBuffer := fbBufferTest2;
+	
+	//ResetAndUse
+	fbBufferTest3 : FB_SimpleRingBuffer;
+	ipBufferTest3 : I_SimpleDynBuffer := fbBufferTest2;
+	
+	//CheckMemoryLeaks
+	fbBufferTest4 	: FB_SimpleRingBuffer;
+	ipBufferTest4 	: I_SimpleDynBuffer := fbBufferTest4;
+	nState4 		: UDINT;
+	nFillPerCycle 	: UDINT := 64;
+	nKbToFill 		: UDINT := 10*1024;
+	nFillCyclesToDo : UDINT := nKbToFill/nFillPerCycle; // 10 mb 
+	nFillCycle 		: UDINT;
+	nErrors4 		: UDINT;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[FillTenElements();
+OverflowOneElement();
+ResetAndUse();
+CheckMemoryLeaks();]]></ST>
+    </Implementation>
+    <Method Name="CheckMemoryLeaks" Id="{9e7794f2-a86d-4bd8-83a4-f798529c44ae}">
+      <Declaration><![CDATA[METHOD CheckMemoryLeaks : REFERENCE TO FB_Test
+VAR
+	i,j 				: UDINT;
+	nElementsSize 		: UDINT;
+	nOverflow			: UDINT 	:= 2;
+	stDataToInsert		: ST_TestStruct; // 1024 bytes
+	nElementsToPush		:UDINT;
+	nReadSize 			: UDINT;
+	bIsFull 			: BOOL;
+	bIsEmpty 			: BOOL;
+	nReadCapacity		: UDINT;
+	
+	nGetValue : ST_TestStruct;
+	
+	nExpectedValue : UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('CheckMemoryLeaks');
+
+CASE nState4 OF 
+	0:
+
+		nElementsSize := SIZEOF(ST_TestStruct);
+		IF NOT fbBufferTest4.Initialize(	nElementSize := nElementsSize,
+											nElementCapacity := 1024*10) THEN
+ 			nErrors4 := nErrors4 +1;
+		END_IF;
+		
+		bIsEmpty := fbBufferTest4.Empty;
+		nReadCapacity := fbBufferTest4.Capacity;				
+		
+		IF nFillCycle = nFillCyclesToDo THEN
+			nElementsToPush := nFillPerCycle + nOverflow;
+		END_IF
+		FOR i := 1 TO nElementsToPush DO
+			stDataToInsert.nIndex := i;
+			IF NOT fbBufferTest4.Push(ADR(stDataToInsert), SIZEOF(stDataToInsert)) THEN
+				nErrors4 := nErrors4 +1;
+			END_IF
+		END_FOR
+		nFillCycle := nFillCycle + 1;
+		IF nFillCycle >= nFillCyclesToDo THEN
+			nFillCycle := 0;
+			nState4 := 10;
+		END_IF
+	10:
+		// Free cylce
+		FOR i := 1 TO nFillPerCycle DO
+			IF NOT fbBufferTest4.Get(ADR(nGetValue), SIZEOF(nGetValue)) THEN
+				nErrors4 := nErrors4 +1;
+			END_IF
+		END_FOR
+
+		nFillCycle := nFillCycle + 1;
+		IF nFillCycle >= nFillCyclesToDo THEN
+			fbBufferTest4.Reset();
+			nFillCycle := 0;
+			nState4 := 20;
+		END_IF
+	20: 
+		
+		bIsFull 	:= fbBufferTest4.Full;
+		nReadSize 	:= fbBufferTest4.Size;
+		nExpectedValue := 0;
+		AssertFalse(bIsFull, 'Inconsistent Full flag');		
+		AssertEquals(Expected 	:= nExpectedValue,
+					 Actual 	:= nReadSize,
+					 Message 	:= 'Error computing Size');		
+		AssertEquals(Expected 	:= nExpectedValue,
+					 Actual 	:= nErrors4,
+					 Message 	:= 'Error computing Size');		
+		TEST_FINISHED(); 
+END_CASE
+
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="FillTenElements" Id="{f67e083b-f408-4571-bae9-a3b1889837d8}">
+      <Declaration><![CDATA[METHOD FillTenElements : BOOL
+VAR
+	i 					: UDINT;
+	nCapacity 			: UDINT 	:= 10;
+	nElementsSize 		: UDINT;
+	
+	nReadSize 			: UDINT;
+	bIsFull 			: BOOL;
+	bIsEmpty 			: BOOL;
+	nReadCapacity		: UDINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('PushTenElements');
+
+nElementsSize := SIZEOF(UDINT);
+IF NOT ipBufferTest1.Initialize(	nElementSize := nElementsSize,
+									nElementCapacity := nCapacity) THEN
+	AssertTrue(FALSE, 'PushTenElements failed to initialize.');		
+END_IF;
+
+bIsEmpty := ipBufferTest1.Empty;
+nReadCapacity := ipBufferTest1.Capacity;
+AssertTrue(bIsEmpty, 'PushTenElements failed to initialize.');
+AssertEquals(Expected 	:= nCapacity,
+             Actual 	:= nReadCapacity,
+             Message 	:= 'Error computing capacity');				
+			 
+FOR i := 1 TO nCapacity DO
+	IF NOT ipBufferTest1.Push(ADR(i), SIZEOF(i)) THEN
+		AssertTrue(FALSE, 'Failed to push');
+	END_IF
+END_FOR
+
+bIsFull 	:= ipBufferTest1.Full;
+nReadSize 	:= ipBufferTest1.Size;
+
+AssertTrue(bIsFull, 'Inconsistent Full flag');		
+AssertEquals(Expected 	:= nCapacity,
+             Actual 	:= nReadSize,
+             Message 	:= 'Error computing Size');		
+ 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="OverflowOneElement" Id="{d126b515-ae91-4af1-85ae-bc791a706ae5}">
+      <Declaration><![CDATA[METHOD OverflowOneElement : REFERENCE TO FB_Test
+VAR
+	i 					: UDINT;
+	nCapacity 			: UDINT 	:= 10;
+	nElementsSize 		: UDINT;
+	nOverflow			: UDINT 	:= 1;
+	
+	nReadSize 			: UDINT;
+	bIsFull 			: BOOL;
+	bIsEmpty 			: BOOL;
+	nReadCapacity		: UDINT;
+	
+	nGetValue : UDINT;
+	
+	nExpectedValue : UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('OverflowOneElement');
+
+nElementsSize := SIZEOF(UDINT);
+IF NOT ipBufferTest2.Initialize(	nElementSize := nElementsSize,
+									nElementCapacity := nCapacity) THEN
+	AssertTrue(FALSE, 'PushTenElements failed to initialize.');		
+END_IF;
+
+bIsEmpty := ipBufferTest2.Empty;
+nReadCapacity := ipBufferTest2.Capacity;
+AssertTrue(bIsEmpty, 'PushTenElements failed to initialize.');
+AssertEquals(Expected 	:= nCapacity,
+             Actual 	:= nReadCapacity,
+             Message 	:= 'Error computing capacity');				
+			 
+FOR i := 1 TO nCapacity + nOverflow DO
+	IF NOT ipBufferTest2.Push(ADR(i), SIZEOF(i)) THEN
+		AssertTrue(FALSE, 'Failed to push');
+	END_IF
+END_FOR
+FOR i := 1 TO nCapacity DO
+	IF NOT ipBufferTest2.Get(ADR(nGetValue), SIZEOF(nGetValue)) THEN
+		AssertTrue(FALSE, 'Failed to get');
+	ELSE
+		nExpectedValue := i + nOverflow;
+		AssertEquals(Expected 	:= nExpectedValue,
+					 Actual 	:= nGetValue,
+					 Message 	:= 'Error on Get');
+	END_IF
+END_FOR
+
+bIsFull 	:= ipBufferTest2.Full;
+nReadSize 	:= ipBufferTest2.Size;
+
+nExpectedValue := 0;
+AssertFalse(bIsFull, 'Inconsistent Full flag');		
+AssertEquals(Expected 	:= nExpectedValue,
+             Actual 	:= nReadSize,
+             Message 	:= 'Error computing Size');		
+ 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ResetAndUse" Id="{d571c45c-b889-49c5-9470-93d57f82b5c5}">
+      <Declaration><![CDATA[METHOD ResetAndUse : REFERENCE TO FB_Test
+VAR
+	i,j 				: UDINT;
+	nCapacity 			: UDINT 	:= 10;
+	nElementsSize 		: UDINT;
+	nOverflow			: UDINT 	:= 1;
+	
+	nReadSize 			: UDINT;
+	bIsFull 			: BOOL;
+	bIsEmpty 			: BOOL;
+	nReadCapacity		: UDINT;
+	
+	nGetValue : UDINT;
+	
+	nExpectedValue : UDINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('ResetAndUse');
+
+FOR j := 1 TO 100 DO
+
+	nElementsSize := SIZEOF(UDINT);
+	IF NOT ipBufferTest3.Initialize(	nElementSize := nElementsSize,
+										nElementCapacity := nCapacity) THEN
+		AssertTrue(FALSE, 'Failed to initialize.');		
+	END_IF;
+	
+	bIsEmpty := ipBufferTest3.Empty;
+	nReadCapacity := ipBufferTest3.Capacity;
+	AssertTrue(bIsEmpty, 'Failed to initialize.');
+	AssertEquals(Expected 	:= nCapacity,
+				 Actual 	:= nReadCapacity,
+				 Message 	:= 'Error computing capacity');				
+				 
+	FOR i := 1 TO nCapacity + nOverflow DO
+		IF NOT ipBufferTest3.Push(ADR(i), SIZEOF(i)) THEN
+			AssertTrue(FALSE, 'Failed to push');
+		END_IF
+	END_FOR
+	FOR i := 1 TO nCapacity DO
+		IF NOT ipBufferTest3.Get(ADR(nGetValue), SIZEOF(nGetValue)) THEN
+			AssertTrue(FALSE, 'Failed to get');
+		ELSE
+			nExpectedValue := i + nOverflow;
+			AssertEquals(Expected 	:= nExpectedValue,
+						 Actual 	:= nGetValue,
+						 Message 	:= 'Error on Get');
+		END_IF
+	END_FOR
+	
+	bIsFull 	:= ipBufferTest3.Full;
+	nReadSize 	:= ipBufferTest3.Size;
+	
+	nExpectedValue := 0;
+	AssertFalse(bIsFull, 'Inconsistent Full flag');		
+	AssertEquals(Expected 	:= nExpectedValue,
+				 Actual 	:= nReadSize,
+				 Message 	:= 'Error computing Size');		
+	ipBufferTest3.Reset();
+END_FOR
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

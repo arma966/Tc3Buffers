@@ -1,0 +1,190 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <POU Name="FB_SimpleRingBuffer" Id="{e53ad98f-6173-4aef-913f-4694cd5f1a80}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_SimpleRingBuffer implements I_SimpleDynBuffer
+VAR
+	_pBuffer : POINTER TO BYTE;
+	_nTail : UDINT;
+	_nHead : UDINT;
+	_nCapacity : UDINT;
+	_bFull : BOOL;
+	_nSize : UDINT;
+	
+	_nElementSize : UDINT;
+	_nError : UDINT;
+END_VAR
+VAR CONSTANT
+	cMaxElementSize : UDINT := 4096;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Property Name="Capacity" Id="{4f499ffd-094a-4763-ab39-f467fe2d39fb}">
+      <Declaration><![CDATA[PROPERTY Capacity : UDINT]]></Declaration>
+      <Get Name="Get" Id="{33492336-1eaf-48f3-aa8b-c8012c59b900}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Capacity := this^._nCapacity;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="Empty" Id="{2228d0b6-97ec-47f1-9fc5-e1918b04efc5}">
+      <Declaration><![CDATA[PROPERTY Empty : bool]]></Declaration>
+      <Get Name="Get" Id="{e4f960d1-fd55-48b4-aa0b-c98802e87eb8}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Empty := not(this^._bFull) and (this^._nHead = this^._nTail);]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="FB_Exit" Id="{047d8622-537a-48cf-a329-c5a195457e33}">
+      <Declaration><![CDATA[//FB_Exit must be implemented explicitly. If there is an implementation, then the
+//method is called before the controller removes the code of the function block instance
+//(implicit call). The return value is not evaluated.
+METHOD FB_Exit: BOOL
+VAR_INPUT
+    bInCopyCode: BOOL;  // TRUE: the exit method is called in order to leave the instance which will be copied afterwards (online change).  
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[this^.Reset();]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="Full" Id="{08fd8c26-5dfa-48fe-bace-141d5672abe6}">
+      <Declaration><![CDATA[PROPERTY Full : bool]]></Declaration>
+      <Get Name="Get" Id="{f9dcc8de-b94f-4abc-9c76-7c4bb0668517}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Full := this^._bFull;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="Get" Id="{3eab6f71-7ef4-4488-a9d4-b6158985910c}">
+      <Declaration><![CDATA[METHOD Get : BOOL
+VAR_INPUT
+	pDestination 	: pvoid;
+	cbSize 			: UDINT;
+END_VAR
+VAR
+	nByteOffset : UDINT;
+	res 		: UDINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF (THIS^._pBuffer = 0) OR (THIS^._nCapacity = 0) THEN RETURN; END_IF; 	// Check initialization
+IF pDestination = 0 THEN RETURN; END_IF;								// Check input
+IF cbSize <> THIS^._nElementSize THEN RETURN; END_IF;					// Check input
+IF THIS^.Empty THEN RETURN; END_IF;										// Check internal state
+
+nByteOffset := THIS^._nTail*THIS^._nElementSize;
+res := memcpy(pDestination, THIS^._pBuffer + nByteOffset, THIS^._nElementSize);
+
+IF res <> THIS^._nElementSize THEN
+	THIS^._nError := THIS^._nError + 1;
+	RETURN;
+END_IF
+
+THIS^._bFull := FALSE;
+IF THIS^._nSize > 0 THEN
+	THIS^._nSize := THIS^._nSize - 1;	
+END_IF
+THIS^._nTail := (THIS^._nTail + 1) MOD THIS^._nCapacity;
+Get := TRUE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Initialize" Id="{51b9cab7-2492-44c2-8581-f24d7e007fea}">
+      <Declaration><![CDATA[METHOD Initialize : BOOL
+VAR_INPUT
+	nElementSize 		: UDINT;
+	nElementCapacity 	: UDINT;
+END_VAR
+VAR
+	nSize 				: UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF nElementSize = 0 OR nElementCapacity = 0 THEN RETURN; END_IF;
+IF nElementSize > THIS^.cMaxElementSize THEN RETURN; END_IF;
+IF (nElementCapacity > (TO_UDINT(16#FFFFFFFF) / nElementSize)) THEN RETURN; END_IF;
+
+THIS^.Reset();
+
+nSize := nElementSize * nElementCapacity;
+THIS^._pBuffer := __NEW(BYTE, nSize);
+
+IF THIS^._pBuffer = 0 THEN RETURN; END_IF;
+THIS^._nElementSize := nElementSize;
+THIS^._nCapacity := nElementCapacity;
+Initialize := TRUE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Push" Id="{892a63fd-5bc1-4c84-b3c3-aeeab53ff526}">
+      <Declaration><![CDATA[METHOD Push : BOOL
+VAR_INPUT
+	pData : pvoid;
+	cbSize : UDINT;
+END_VAR
+VAR
+	nByteOffset : UDINT;
+	res			: UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF (THIS^._pBuffer = 0) OR (THIS^._nCapacity = 0) THEN RETURN; END_IF;		// Check initialization
+IF cbSize <> THIS^._nElementSize THEN RETURN; END_IF;						// Check input
+IF pData = 0 THEN RETURN; END_IF											// Check input
+
+nByteOffset := THIS^._nHead*THIS^._nElementSize;
+res := memcpy(THIS^._pBuffer + nByteOffset,pData,THIS^._nElementSize);
+IF res <> THIS^._nElementSize THEN
+	THIS^._nError := THIS^._nError + 1; 
+	RETURN;
+END_IF
+
+IF THIS^._bFull THEN
+	THIS^._nTail := (THIS^._nTail + 1) MOD THIS^._nCapacity;
+ELSE
+	THIS^._nSize := THIS^._nSize + 1;
+END_IF
+
+THIS^._nHead := (THIS^._nHead + 1) MOD THIS^._nCapacity;
+THIS^._bFull := THIS^._nHead = THIS^._nTail;
+
+Push := TRUE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Reset" Id="{9111214e-e811-4bb5-a589-20522dc8b000}">
+      <Declaration><![CDATA[METHOD Reset
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF THIS^._pBuffer <> 0 THEN
+	__DELETE(THIS^._pBuffer);
+	THIS^._pBuffer := 0;
+END_IF
+
+THIS^._nTail 			:= 0;
+THIS^._nHead 			:= 0;
+THIS^._nCapacity 		:= 0;
+THIS^._bFull 			:= 0;
+THIS^._nSize 			:= 0;
+THIS^._nElementSize 	:= 0;
+THIS^._nError 			:= 0;]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="Size" Id="{b387d71a-9db9-4c66-9c62-eecbc20cf29e}">
+      <Declaration><![CDATA[PROPERTY Size : UDINT]]></Declaration>
+      <Get Name="Get" Id="{fe689ade-0823-4cb5-9ec3-2fc530d0b3ba}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Size := this^._nSize;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+  </POU>
+</TcPlcObject>
