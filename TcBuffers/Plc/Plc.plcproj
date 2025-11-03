@@ -24,10 +24,28 @@
     <Compile Include="Program\MAIN.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Src\Abstract\FB_VarByteBufferBase.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Src\Abstract\I_VarByteBufferBase.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Src\SimpleDynBuffer\FB_SimpleRingBuffer.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Src\SimpleDynBuffer\I_SimpleRingBuffer.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Src\VarByteBuffer\FB_VarByteBuffer.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Src\VarByteBuffer\I_VarByteBuffer.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Src\VarStringBuffer\FB_VarStringBuffer.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Src\VarStringBuffer\I_VarStringBuffer.TcIO">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="_test\SimpleRingBuffer\DUT\ST_TestStruct.TcDUT">
@@ -36,15 +54,22 @@
     <Compile Include="_test\SimpleRingBuffer\FB_TestSimpleDynBuffer.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="_test\VarStringBuffer\FB_TestVarStringBuffer.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DUTs" />
     <Folder Include="GVLs" />
+    <Folder Include="Src\Abstract" />
+    <Folder Include="Src\VarStringBuffer" />
+    <Folder Include="Src\VarByteBuffer" />
     <Folder Include="_test" />
     <Folder Include="Src" />
     <Folder Include="Src\SimpleDynBuffer" />
     <Folder Include="VISUs" />
     <Folder Include="Program" />
+    <Folder Include="_test\VarStringBuffer" />
     <Folder Include="_test\SimpleRingBuffer" />
     <Folder Include="_test\SimpleRingBuffer\DUT" />
   </ItemGroup>

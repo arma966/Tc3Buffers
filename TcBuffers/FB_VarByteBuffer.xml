@@ -1,0 +1,517 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://www.plcopen.org/xml/tc6_0200">
+  <fileHeader companyName="Beckhoff Automation GmbH" productName="TwinCAT PLC Control" productVersion="3.5.20.60" creationDateTime="2025-11-03T13:47:02.2969609" />
+  <contentHeader name="Plc" modificationDateTime="2025-11-03T13:47:02.3009785">
+    <coordinateInfo>
+      <fbd>
+        <scaling x="1" y="1" />
+      </fbd>
+      <ld>
+        <scaling x="1" y="1" />
+      </ld>
+      <sfc>
+        <scaling x="1" y="1" />
+      </sfc>
+    </coordinateInfo>
+    <addData>
+      <data name="http://www.3s-software.com/plcopenxml/projectinformation" handleUnknown="implementation">
+        <ProjectInformation />
+      </data>
+    </addData>
+  </contentHeader>
+  <types>
+    <dataTypes />
+    <pous>
+      <pou name="FB_VarByteBuffer" pouType="functionBlock">
+        <interface>
+          <localVars>
+            <variable name="_pBuffer">
+              <type>
+                <pointer>
+                  <baseType>
+                    <BYTE />
+                  </baseType>
+                </pointer>
+              </type>
+            </variable>
+            <variable name="_nHead">
+              <type>
+                <UDINT />
+              </type>
+            </variable>
+            <variable name="_nCapacity">
+              <type>
+                <UDINT />
+              </type>
+            </variable>
+            <variable name="_nError">
+              <type>
+                <UDINT />
+              </type>
+            </variable>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+                <InterfaceAsPlainText>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">FUNCTION_BLOCK FB_VarByteBuffer IMPLEMENTS I_VarByteBuffer
+VAR
+	_pBuffer 	: POINTER TO BYTE;
+	_nHead 		: UDINT;
+	_nCapacity 	: UDINT;
+	
+	_nError : UDINT;
+END_VAR
+VAR CONSTANT
+	cMaxBufferSize 		: UDINT := 104857600 ; // 100 Mb
+END_VAR
+</xhtml>
+                </InterfaceAsPlainText>
+              </data>
+            </addData>
+          </localVars>
+          <localVars constant="true">
+            <variable name="cMaxBufferSize">
+              <type>
+                <UDINT />
+              </type>
+              <initialValue>
+                <simpleValue value="104857600" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> 100 Mb</xhtml>
+              </documentation>
+            </variable>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+                <InterfaceAsPlainText>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">FUNCTION_BLOCK FB_VarByteBuffer IMPLEMENTS I_VarByteBuffer
+VAR
+	_pBuffer 	: POINTER TO BYTE;
+	_nHead 		: UDINT;
+	_nCapacity 	: UDINT;
+	
+	_nError : UDINT;
+END_VAR
+VAR CONSTANT
+	cMaxBufferSize 		: UDINT := 104857600 ; // 100 Mb
+END_VAR
+</xhtml>
+                </InterfaceAsPlainText>
+              </data>
+            </addData>
+          </localVars>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/pouinheritance" handleUnknown="implementation">
+              <Inheritance>
+                <Implements>I_VarByteBuffer</Implements>
+              </Inheritance>
+            </data>
+          </addData>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="FB_Exit" ObjectId="ac947a0f-b805-418e-8e65-d6107360a953">
+              <interface>
+                <returnType>
+                  <BOOL />
+                </returnType>
+                <inputVars>
+                  <variable name="bInCopyCode">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"> TRUE: the exit method is called in order to leave the instance which will be copied afterwards (online change).  </xhtml>
+                    </documentation>
+                  </variable>
+                  <addData>
+                    <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+                      <InterfaceAsPlainText>
+                        <xhtml xmlns="http://www.w3.org/1999/xhtml">//FB_Exit must be implemented explicitly. If there is an implementation, then the
+//method is called before the controller removes the code of the function block instance
+//(implicit call). The return value is not evaluated.
+METHOD FB_Exit: BOOL
+VAR_INPUT
+    bInCopyCode: BOOL;  // TRUE: the exit method is called in order to leave the instance which will be copied afterwards (online change).  
+END_VAR</xhtml>
+                      </InterfaceAsPlainText>
+                    </data>
+                  </addData>
+                </inputVars>
+                <documentation>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">FB_Exit must be implemented explicitly. If there is an implementation, then the
+method is called before the controller removes the code of the function block instance
+(implicit call). The return value is not evaluated.</xhtml>
+                </documentation>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">this^.Reset();</xhtml>
+                </ST>
+              </body>
+              <InterfaceAsPlainText>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">//FB_Exit must be implemented explicitly. If there is an implementation, then the
+//method is called before the controller removes the code of the function block instance
+//(implicit call). The return value is not evaluated.
+METHOD FB_Exit: BOOL
+VAR_INPUT
+    bInCopyCode: BOOL;  // TRUE: the exit method is called in order to leave the instance which will be copied afterwards (online change).  
+END_VAR</xhtml>
+              </InterfaceAsPlainText>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="Initialize" ObjectId="7c27707e-a9b3-4022-8804-63f37c03edcd">
+              <interface>
+                <returnType>
+                  <BOOL />
+                </returnType>
+                <inputVars>
+                  <variable name="nBufferSize">
+                    <type>
+                      <UDINT />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"> Size in byte</xhtml>
+                    </documentation>
+                  </variable>
+                  <addData>
+                    <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+                      <InterfaceAsPlainText>
+                        <xhtml xmlns="http://www.w3.org/1999/xhtml">METHOD Initialize : BOOL
+VAR_INPUT
+	nBufferSize 		: UDINT; // Size in byte
+END_VAR</xhtml>
+                      </InterfaceAsPlainText>
+                    </data>
+                  </addData>
+                </inputVars>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF nBufferSize = 0 OR nBufferSize &gt; THIS^.cMaxBufferSize THEN RETURN; END_IF;
+
+THIS^.Reset();
+
+THIS^._nCapacity := nBufferSize;
+THIS^._pBuffer := __NEW(BYTE, nBufferSize);
+IF THIS^._pBuffer = 0 THEN RETURN; END_IF;
+
+Initialize := TRUE;</xhtml>
+                </ST>
+              </body>
+              <InterfaceAsPlainText>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">METHOD Initialize : BOOL
+VAR_INPUT
+	nBufferSize 		: UDINT; // Size in byte
+END_VAR</xhtml>
+              </InterfaceAsPlainText>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="Push" ObjectId="e4bd66c9-d210-422e-b417-2a1820ac5d79">
+              <interface>
+                <returnType>
+                  <BOOL />
+                </returnType>
+                <inputVars>
+                  <variable name="pData">
+                    <type>
+                      <derived name="pvoid" />
+                    </type>
+                  </variable>
+                  <variable name="cbSize">
+                    <type>
+                      <UDINT />
+                    </type>
+                  </variable>
+                  <addData>
+                    <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+                      <InterfaceAsPlainText>
+                        <xhtml xmlns="http://www.w3.org/1999/xhtml">METHOD Push : BOOL
+VAR_INPUT
+	pData : pvoid;
+	cbSize : UDINT;
+END_VAR
+VAR;
+	res			: UDINT;
+END_VAR</xhtml>
+                      </InterfaceAsPlainText>
+                    </data>
+                  </addData>
+                </inputVars>
+                <localVars>
+                  <variable name="res">
+                    <type>
+                      <UDINT />
+                    </type>
+                  </variable>
+                  <addData>
+                    <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+                      <InterfaceAsPlainText>
+                        <xhtml xmlns="http://www.w3.org/1999/xhtml">METHOD Push : BOOL
+VAR_INPUT
+	pData : pvoid;
+	cbSize : UDINT;
+END_VAR
+VAR;
+	res			: UDINT;
+END_VAR</xhtml>
+                      </InterfaceAsPlainText>
+                    </data>
+                  </addData>
+                </localVars>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF (THIS^._pBuffer = 0) OR (THIS^._nCapacity = 0) THEN RETURN; END_IF;		// Check initialization
+IF pData = 0 THEN RETURN; END_IF											// Check input
+IF THIS^.FreeBytes &lt; cbSize THEN RETURN; END_IF;
+
+res := memcpy(THIS^._pBuffer + THIS^._nHead,pData,cbSize);
+IF res &lt;&gt; cbSize THEN
+	THIS^._nError := THIS^._nError + 1; 
+	RETURN;
+END_IF
+
+THIS^._nHead := THIS^._nHead + cbSize;
+
+Push := TRUE;</xhtml>
+                </ST>
+              </body>
+              <InterfaceAsPlainText>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">METHOD Push : BOOL
+VAR_INPUT
+	pData : pvoid;
+	cbSize : UDINT;
+END_VAR
+VAR;
+	res			: UDINT;
+END_VAR</xhtml>
+              </InterfaceAsPlainText>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="Reset" ObjectId="f7bd2dd6-9a65-4a67-899c-899d4d9f2570">
+              <interface />
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^._pBuffer &lt;&gt; 0 THEN
+	__DELETE(THIS^._pBuffer);
+	THIS^._pBuffer := 0;
+END_IF
+
+THIS^._nHead 			:= 0;
+THIS^._nCapacity 		:= 0;
+THIS^._nError 			:= 0;</xhtml>
+                </ST>
+              </body>
+              <InterfaceAsPlainText>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">METHOD Reset
+</xhtml>
+              </InterfaceAsPlainText>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="Clear" ObjectId="0bbe92d3-6f14-41b3-8aa8-eff1b0f8129a">
+              <interface>
+                <returnType>
+                  <BOOL />
+                </returnType>
+                <localVars>
+                  <variable name="res">
+                    <type>
+                      <UDINT />
+                    </type>
+                  </variable>
+                  <addData>
+                    <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+                      <InterfaceAsPlainText>
+                        <xhtml xmlns="http://www.w3.org/1999/xhtml">METHOD Clear : BOOL
+VAR
+	res : UDINT;
+END_VAR
+</xhtml>
+                      </InterfaceAsPlainText>
+                    </data>
+                  </addData>
+                </localVars>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">res := memset(THIS^.Buffer, 0, THIS^.Capacity);
+IF res &lt;&gt; THIS^.Capacity THEN RETURN; END_IF
+THIS^._nHead := 0;
+Clear := true;</xhtml>
+                </ST>
+              </body>
+              <InterfaceAsPlainText>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">METHOD Clear : BOOL
+VAR
+	res : UDINT;
+END_VAR
+</xhtml>
+              </InterfaceAsPlainText>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/property" handleUnknown="implementation">
+            <Property name="Capacity" ObjectId="a7b855d3-5eab-4132-95d7-aec335a1155e">
+              <interface>
+                <returnType>
+                  <UDINT />
+                </returnType>
+              </interface>
+              <GetAccessor>
+                <interface />
+                <body>
+                  <ST>
+                    <xhtml xmlns="http://www.w3.org/1999/xhtml">Capacity := this^._nCapacity;</xhtml>
+                  </ST>
+                </body>
+                <InterfaceAsPlainText>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">VAR
+END_VAR
+</xhtml>
+                </InterfaceAsPlainText>
+                <addData />
+              </GetAccessor>
+              <InterfaceAsPlainText>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">PROPERTY Capacity : UDINT</xhtml>
+              </InterfaceAsPlainText>
+              <addData />
+            </Property>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/property" handleUnknown="implementation">
+            <Property name="Size" ObjectId="48ba709a-0b48-437c-b9a9-6fddb32a62a9">
+              <interface>
+                <returnType>
+                  <UDINT />
+                </returnType>
+              </interface>
+              <GetAccessor>
+                <interface />
+                <body>
+                  <ST>
+                    <xhtml xmlns="http://www.w3.org/1999/xhtml">Size := this^._nHead;</xhtml>
+                  </ST>
+                </body>
+                <InterfaceAsPlainText>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">VAR
+END_VAR
+</xhtml>
+                </InterfaceAsPlainText>
+                <addData />
+              </GetAccessor>
+              <InterfaceAsPlainText>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">PROPERTY Size : UDINT</xhtml>
+              </InterfaceAsPlainText>
+              <addData />
+            </Property>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/property" handleUnknown="implementation">
+            <Property name="Buffer" ObjectId="68896750-9f6e-4386-b962-c190361931e8">
+              <interface>
+                <returnType>
+                  <derived name="PVOID" />
+                </returnType>
+              </interface>
+              <GetAccessor>
+                <interface />
+                <body>
+                  <ST>
+                    <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer := THIS^._pBuffer;</xhtml>
+                  </ST>
+                </body>
+                <InterfaceAsPlainText>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">VAR
+END_VAR
+</xhtml>
+                </InterfaceAsPlainText>
+                <addData />
+              </GetAccessor>
+              <InterfaceAsPlainText>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">PROPERTY Buffer : PVOID</xhtml>
+              </InterfaceAsPlainText>
+              <addData />
+            </Property>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/property" handleUnknown="implementation">
+            <Property name="FreeBytes" ObjectId="fc906ff6-5689-42e1-8b63-2ab8e270ae36">
+              <interface>
+                <returnType>
+                  <UDINT />
+                </returnType>
+              </interface>
+              <GetAccessor>
+                <interface />
+                <body>
+                  <ST>
+                    <xhtml xmlns="http://www.w3.org/1999/xhtml">FreeBytes := THIS^._nCapacity - this^._nHead;</xhtml>
+                  </ST>
+                </body>
+                <InterfaceAsPlainText>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">VAR
+END_VAR
+</xhtml>
+                </InterfaceAsPlainText>
+                <addData />
+              </GetAccessor>
+              <InterfaceAsPlainText>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">PROPERTY FreeBytes : UDINT</xhtml>
+              </InterfaceAsPlainText>
+              <addData />
+            </Property>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+            <InterfaceAsPlainText>
+              <xhtml xmlns="http://www.w3.org/1999/xhtml">FUNCTION_BLOCK FB_VarByteBuffer IMPLEMENTS I_VarByteBuffer
+VAR
+	_pBuffer 	: POINTER TO BYTE;
+	_nHead 		: UDINT;
+	_nCapacity 	: UDINT;
+	
+	_nError : UDINT;
+END_VAR
+VAR CONSTANT
+	cMaxBufferSize 		: UDINT := 104857600 ; // 100 Mb
+END_VAR
+</xhtml>
+            </InterfaceAsPlainText>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>4e19349b-1227-46f1-97cb-14d3a766e6ec</ObjectId>
+          </data>
+        </addData>
+      </pou>
+    </pous>
+  </types>
+  <instances>
+    <configurations />
+  </instances>
+  <addData>
+    <data name="http://www.3s-software.com/plcopenxml/projectstructure" handleUnknown="discard">
+      <ProjectStructure>
+        <Object Name="FB_VarByteBuffer" ObjectId="4e19349b-1227-46f1-97cb-14d3a766e6ec">
+          <Object Name="Capacity" ObjectId="a7b855d3-5eab-4132-95d7-aec335a1155e" />
+          <Object Name="FB_Exit" ObjectId="ac947a0f-b805-418e-8e65-d6107360a953" />
+          <Object Name="Initialize" ObjectId="7c27707e-a9b3-4022-8804-63f37c03edcd" />
+          <Object Name="Push" ObjectId="e4bd66c9-d210-422e-b417-2a1820ac5d79" />
+          <Object Name="Reset" ObjectId="f7bd2dd6-9a65-4a67-899c-899d4d9f2570" />
+          <Object Name="Size" ObjectId="48ba709a-0b48-437c-b9a9-6fddb32a62a9" />
+          <Object Name="Buffer" ObjectId="68896750-9f6e-4386-b962-c190361931e8" />
+          <Object Name="FreeBytes" ObjectId="fc906ff6-5689-42e1-8b63-2ab8e270ae36" />
+          <Object Name="Clear" ObjectId="0bbe92d3-6f14-41b3-8aa8-eff1b0f8129a" />
+        </Object>
+      </ProjectStructure>
+    </data>
+  </addData>
+</project>

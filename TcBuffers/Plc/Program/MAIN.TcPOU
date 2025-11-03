@@ -3,8 +3,9 @@
   <POU Name="MAIN" Id="{7ced7848-7e71-4263-9269-881b93844670}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM MAIN
 VAR
-	nCounter 	: INT;
-	fbTestSimpleDynBuffer : FB_TestSimpleDynBuffer;
+	nCounter 				: INT;
+	fbTestSimpleDynBuffer 	: FB_TestSimpleDynBuffer;
+	fbTestVarByteBuffer		: FB_TestVarStringBuffer;
 END_VAR
 ]]></Declaration>
     <Implementation>

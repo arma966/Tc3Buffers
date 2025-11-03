@@ -1,0 +1,174 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <POU Name="FB_TestVarStringBuffer" Id="{bf7fbe8c-5563-4df7-b7a5-eb77675eb6e0}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_TestVarStringBuffer EXTENDS TcUnit.FB_TestSuite
+VAR
+	fbTestBuffer1 : FB_VarStringBuffer;
+	ipTestBuffer1 : I_VarStringBuffer	:= fbTestBuffer1;
+	
+	fbTestBuffer2 : FB_VarStringBuffer;
+	ipTestBuffer2 : I_VarStringBuffer	:= fbTestBuffer2;
+	
+	fbTestBuffer3 : FB_VarStringBuffer;
+	ipTestBuffer3 : I_VarStringBuffer	:= fbTestBuffer3;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[CommonUseCase();
+ValidateInput();
+BlockWhenFull();]]></ST>
+    </Implementation>
+    <Method Name="BlockWhenFull" Id="{c339052a-01b6-4758-912a-89e2181e1425}">
+      <Declaration><![CDATA[METHOD BlockWhenFull : REFERENCE TO FB_Test
+VAR
+	cBufferSize 		: UDINT := 22;
+	cNumberOfElements 	: UDINT := 5;
+	cOutBufferSize 		: UDINT := 22;
+	cExpectedFreeBytes 	: UDINT := 2;
+	
+	aInElements : ARRAY[1..6] OF T_MaxString := [	'AAAAA','BBBBB','CCCCC','DDDDD','EEEEE'];
+	
+	sOutBuffer 	: STRING(22);
+	i 			: UDINT;
+	res 		: UDINT;
+	
+	nReadCapacity 	: UDINT;
+	nReadBuffer 	: PVOID;
+	nReadFreeBytes 	: UDINT;
+	bIsNotZero 		: BOOL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('BlockWhenFull');
+ipTestBuffer3.Initialize(cBufferSize);
+
+FOR i := 1 TO cNumberOfElements DO
+	ipTestBuffer3.Push(aInElements[i]);
+END_FOR
+
+IF ipTestBuffer3.Push(aInElements[5]) THEN
+	AssertTrue(FALSE, 'Memory Corrupted');	
+END_IF
+
+nReadCapacity 	:= ipTestBuffer3.Capacity;
+nReadFreeBytes 	:= ipTestBuffer3.FreeBytes;
+
+AssertEquals(Expected 	:= cBufferSize,
+             Actual 	:= nReadCapacity,
+             Message 	:= 'Error computing Capacity');
+	
+			 
+AssertEquals(Expected 	:= cExpectedFreeBytes,
+             Actual 	:= nReadFreeBytes,
+             Message 	:= 'Error computing FreeBytes'); 
+			 
+						
+res := memcpy(ADR(sOutBuffer), ipTestBuffer3.Buffer, SIZEOF(sOutBuffer));
+
+AssertEquals_STRING(	Expected := 'AAAAABBBBBCCCCCDDDDD',
+						Actual := sOutBuffer,
+						Message := 'Error extracting the buffer');
+			 
+						
+TEST_FINISHED(); ]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="CommonUseCase" Id="{eab96bb6-e79a-4c58-be54-40db3b0bd5f8}">
+      <Declaration><![CDATA[METHOD CommonUseCase : REFERENCE TO FB_Test
+VAR
+	cBufferSize 		: UDINT := 20;
+	cNumberOfElements 	: UDINT := 5;
+	cOutBufferSize 		: UDINT := 17;
+	cExpectedFreeBytes 	: UDINT := 3;
+	
+	aInElements : ARRAY[1..5] OF T_MaxString := [	'AAAAAA','BBBBB','CCC','DD','E'];
+	
+	sOutBuffer 	: STRING(20);
+	i 			: UDINT;
+	res 		: UDINT;
+	
+	nReadCapacity 	: UDINT;
+	nReadBuffer 	: PVOID;
+	nReadFreeBytes 	: UDINT;
+	bIsNotZero 		: BOOL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('CommonUseCase');
+IF NOT ipTestBuffer1.Initialize(cBufferSize) THEN
+	AssertTrue(FALSE, 'Failed to initialize.');		
+END_IF
+
+FOR i := 1 TO cNumberOfElements DO
+	ipTestBuffer1.Push(aInElements[i]);
+END_FOR
+
+nReadCapacity 	:= ipTestBuffer1.Capacity;
+nReadBuffer 	:= ipTestBuffer1.Buffer;
+nReadFreeBytes 	:= ipTestBuffer1.FreeBytes;
+bIsNotZero := nReadBuffer <> 0;
+
+AssertEquals(Expected 	:= cBufferSize,
+             Actual 	:= nReadCapacity,
+             Message 	:= 'Error computing Capacity');
+
+AssertTrue(bIsNotZero, 'Failed to allocate the buffer');		
+			 
+AssertEquals(Expected 	:= cExpectedFreeBytes,
+             Actual 	:= nReadFreeBytes,
+             Message 	:= 'Error computing FreeBytes'); 
+			 
+						
+res := memcpy(ADR(sOutBuffer), nReadBuffer, SIZEOF(sOutBuffer));
+
+AssertEquals_STRING(	Expected := 'AAAAAABBBBBCCCDDE',
+						Actual := sOutBuffer,
+						Message := 'Error extracting the buffer');
+						
+IF NOT ipTestBuffer1.Clear() THEN
+	AssertTrue(FALSE, 'Failed to clear');		
+END_IF
+
+nReadCapacity 	:= ipTestBuffer1.Capacity;
+nReadBuffer 	:= ipTestBuffer1.Buffer;
+nReadFreeBytes 	:= ipTestBuffer1.FreeBytes;
+bIsNotZero := nReadBuffer <> 0;
+
+AssertEquals(Expected 	:= cBufferSize,
+             Actual 	:= nReadCapacity,
+             Message 	:= 'Error computing Capacity after clear');
+
+AssertTrue(bIsNotZero, 'Buffer Corrupted after clear');		
+			 
+AssertEquals(Expected 	:= cBufferSize,
+             Actual 	:= nReadFreeBytes,
+             Message 	:= 'Error computing FreeBytes after clear'); 
+			 
+						
+TEST_FINISHED(); ]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ValidateInput" Id="{2aac5a88-f139-42fd-8e6f-c070e323f516}">
+      <Declaration><![CDATA[METHOD ValidateInput : REFERENCE TO FB_Test
+VAR
+	cBufferSize		: UDINT := 20;
+	sString 		: T_MaxString := 'foo';
+	sInvalidString 	: REFERENCE TO T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('ValidateInput');
+
+IF ipTestBuffer2.Push(sString) THEN
+	AssertTrue(FALSE, 'Memory corrupted.');		
+END_IF
+
+ipTestBuffer2.Initialize(cBufferSize);
+
+IF ipTestBuffer2.Push(sInvalidString) THEN
+	AssertTrue(FALSE, 'Memory corrupted from invalid reference.');		
+END_IF
+
+TEST_FINISHED(); ]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

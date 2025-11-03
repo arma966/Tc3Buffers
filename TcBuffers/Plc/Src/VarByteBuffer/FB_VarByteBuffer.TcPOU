@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <POU Name="FB_VarByteBuffer" Id="{4e19349b-1227-46f1-97cb-14d3a766e6ec}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_VarByteBuffer EXTENDS FB_VarByteBufferBase IMPLEMENTS I_VarByteBuffer
+VAR
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="Push" Id="{e4bd66c9-d210-422e-b417-2a1820ac5d79}">
+      <Declaration><![CDATA[METHOD Push : BOOL
+VAR_INPUT
+	pData : pvoid;
+	cbSize : UDINT;
+END_VAR
+VAR;
+	res			: UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF (THIS^._pBuffer = 0) OR (THIS^._nCapacity = 0) THEN RETURN; END_IF;		// Check initialization
+IF pData = 0 THEN RETURN; END_IF											// Check input
+IF THIS^.FreeBytes < cbSize THEN RETURN; END_IF;
+
+res := memcpy(THIS^._pBuffer + THIS^._nHead,pData,cbSize);
+IF res <> cbSize THEN
+	THIS^._nError := THIS^._nError + 1; 
+	RETURN;
+END_IF
+
+THIS^._nHead := THIS^._nHead + cbSize;
+
+Push := TRUE;]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

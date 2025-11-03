@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <POU Name="FB_VarStringBuffer" Id="{4ae3327e-2a4f-46c5-ab9b-936df8ab899d}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_VarStringBuffer EXTENDS FB_VarByteBufferBase IMPLEMENTS I_VarStringBuffer
+
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="Push" Id="{63bb856b-1866-4569-bd8e-93a50ec84fd6}">
+      <Declaration><![CDATA[METHOD Push : BOOL
+VAR_INPUT
+	sInputString	: REFERENCE TO T_MaxString;
+END_VAR
+VAR
+	res 		: UDINT;
+	nStringSize : UDINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF (THIS^._pBuffer = 0) OR (THIS^._nCapacity = 0) THEN RETURN; END_IF;		// Check initialization
+IF NOT __ISVALIDREF(sInputString) THEN RETURN; END_IF;
+
+nStringSize := INT_TO_UDINT(len(sInputString));
+IF nStringSize > THIS^.FreeBytes THEN RETURN; END_IF;
+
+res := memcpy(THIS^._pBuffer + THIS^._nHead,ADR(sInputString),nStringSize);
+IF res <> nStringSize THEN
+	THIS^._nError := THIS^._nError + 1; 
+	RETURN;
+END_IF
+
+THIS^._nHead := THIS^._nHead + nStringSize;
+Push := TRUE;]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

@@ -3,20 +3,19 @@
   <POU Name="FB_SimpleRingBuffer" Id="{e53ad98f-6173-4aef-913f-4694cd5f1a80}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_SimpleRingBuffer implements I_SimpleRingBuffer
 VAR
-	_pBuffer : POINTER TO BYTE;
-	_nTail : UDINT;
-	_nHead : UDINT;
-	_nCapacity : UDINT;
-	_bFull : BOOL;
-	_nSize : UDINT;
+	_pBuffer 		: POINTER TO BYTE;
+	_nTail 			: UDINT;
+	_nHead 			: UDINT;
+	_nCapacity 		: UDINT;
+	_bFull 			: BOOL;
+	_nSize 			: UDINT;
 	
-	_nElementSize : UDINT;
-	_nError : UDINT;
+	_nElementSize 	: UDINT;
+	_nError 		: UDINT;
 END_VAR
 VAR CONSTANT
 	cMaxElementSize : UDINT := 4096;
-END_VAR
-]]></Declaration>
+END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
@@ -95,6 +94,7 @@ IF THIS^._nSize > 0 THEN
 	THIS^._nSize := THIS^._nSize - 1;	
 END_IF
 THIS^._nTail := (THIS^._nTail + 1) MOD THIS^._nCapacity;
+
 Get := TRUE;]]></ST>
       </Implementation>
     </Method>

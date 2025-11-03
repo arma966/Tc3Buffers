@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <POU Name="FB_VarByteBufferBase" Id="{af9b5fbc-482b-4a14-87ea-a30c3aec9fb7}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_VarByteBufferBase IMPLEMENTS I_VarByteBufferBase
+VAR
+	_pBuffer 		: POINTER TO BYTE;
+	_nHead 			: UDINT;
+	_nCapacity 		: UDINT;
+	
+	_nError			: UDINT;
+END_VAR
+VAR CONSTANT
+	cMaxBufferSize 	: UDINT := 104857600 ; // 100 Mb
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Property Name="Buffer" Id="{8169bf58-5fe4-4db7-bb6e-92030427e2d1}">
+      <Declaration><![CDATA[PROPERTY Buffer : PVOID]]></Declaration>
+      <Get Name="Get" Id="{387f7d5b-9bc9-4ac6-97e5-25ecce326421}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Buffer := THIS^._pBuffer;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="Capacity" Id="{6ba47e30-ebf4-4dab-ba6e-30dd43bd00c0}">
+      <Declaration><![CDATA[PROPERTY Capacity : UDINT]]></Declaration>
+      <Get Name="Get" Id="{e038da31-2eb1-4d23-8891-0614dca3f29d}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Capacity := this^._nCapacity;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="Clear" Id="{b3b922dd-08ad-4b8b-adc0-faa9550bc3a2}">
+      <Declaration><![CDATA[METHOD Clear : BOOL
+VAR
+	res : UDINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[res := MEMSET(THIS^.Buffer, 0, THIS^.Capacity);
+IF res <> THIS^.Capacity THEN RETURN; END_IF;
+THIS^._nHead := 0;
+Clear := TRUE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="FB_Exit" Id="{f8594b86-ddf3-4333-83f2-b048cf5b39d0}">
+      <Declaration><![CDATA[//FB_Exit must be implemented explicitly. If there is an implementation, then the
+//method is called before the controller removes the code of the function block instance
+//(implicit call). The return value is not evaluated.
+METHOD FB_Exit: BOOL
+VAR_INPUT
+    bInCopyCode: BOOL;  // TRUE: the exit method is called in order to leave the instance which will be copied afterwards (online change).  
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[this^.Reset();]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="FreeBytes" Id="{f3ccd858-0b32-4a79-ac02-b01dbfe65159}">
+      <Declaration><![CDATA[PROPERTY FreeBytes : UDINT]]></Declaration>
+      <Get Name="Get" Id="{2084b588-b8d9-4a04-a60b-b40a0ce4af86}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[FreeBytes := THIS^._nCapacity - this^._nHead;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="Initialize" Id="{22b39e4b-4e44-42be-9940-3fa361a88b9f}">
+      <Declaration><![CDATA[METHOD Initialize : BOOL
+VAR_INPUT
+	nBufferSize 		: UDINT; // Size in byte
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF nBufferSize = 0 OR nBufferSize > THIS^.cMaxBufferSize THEN RETURN; END_IF;
+
+THIS^.Reset();
+
+THIS^._nCapacity := nBufferSize;
+THIS^._pBuffer := __NEW(BYTE, nBufferSize);
+IF THIS^._pBuffer = 0 THEN RETURN; END_IF;
+
+Initialize := TRUE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Reset" Id="{3bce5fa5-5c88-4367-b660-218b76abf956}">
+      <Declaration><![CDATA[METHOD Reset
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF THIS^._pBuffer <> 0 THEN
+	__DELETE(THIS^._pBuffer);
+	THIS^._pBuffer := 0;
+END_IF
+
+THIS^._nHead 			:= 0;
+THIS^._nCapacity 		:= 0;
+THIS^._nError 			:= 0;]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="Size" Id="{720ec391-4f44-4462-822c-8b83d0337c05}">
+      <Declaration><![CDATA[PROPERTY Size : UDINT]]></Declaration>
+      <Get Name="Get" Id="{2e88e14b-2ded-4e8c-9f56-5fce530ffd42}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Size := this^._nHead;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <Itf Name="I_VarStringBuffer" Id="{88388f11-4090-4f89-8c54-777e8983e069}">
+    <Declaration><![CDATA[INTERFACE I_VarStringBuffer EXTENDS I_VarByteBufferBase
+]]></Declaration>
+    <Method Name="Push" Id="{3e12aae4-b3d2-46ea-bf2c-f63cb44f3cbe}">
+      <Declaration><![CDATA[METHOD Push : BOOL
+VAR_INPUT
+	sInputString	: REFERENCE TO T_MaxString;
+END_VAR]]></Declaration>
+    </Method>
+  </Itf>
+</TcPlcObject>

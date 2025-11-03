@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <Itf Name="I_VarByteBufferBase" Id="{5621949c-0dc6-457e-b23e-0aa68299a226}">
+    <Declaration><![CDATA[INTERFACE I_VarByteBufferBase
+]]></Declaration>
+    <Property Name="Buffer" Id="{ce02aefb-10a8-4021-8369-7d6fe79ae8ed}">
+      <Declaration><![CDATA[PROPERTY Buffer : PVOID]]></Declaration>
+      <Get Name="Get" Id="{68add254-d745-4efa-b43a-6be5f717727d}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="Capacity" Id="{90e1910c-1e1b-4944-974f-e8ad2db93c4a}">
+      <Declaration><![CDATA[PROPERTY Capacity : UDINT]]></Declaration>
+      <Get Name="Get" Id="{d610a920-f74d-4fc0-a47e-80414dbca44b}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Method Name="Clear" Id="{2d19adf6-cb85-4b7b-ad1b-09b498e54220}">
+      <Declaration><![CDATA[METHOD Clear : BOOL
+]]></Declaration>
+    </Method>
+    <Property Name="FreeBytes" Id="{beb246ef-0add-4f7a-8a6c-5ce94ef3d7f8}">
+      <Declaration><![CDATA[PROPERTY FreeBytes : UDINT]]></Declaration>
+      <Get Name="Get" Id="{03dde9c7-e630-4f22-96e8-b312278bb7d4}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Method Name="Initialize" Id="{37837a7f-e622-4fa7-be59-3210f83b4fe5}">
+      <Declaration><![CDATA[METHOD Initialize : BOOL
+VAR_INPUT
+	nBufferSize 		: UDINT; // Size in byte
+END_VAR]]></Declaration>
+    </Method>
+    <Method Name="Reset" Id="{c42e50a3-a6c0-44d8-8679-cf6cdca02325}">
+      <Declaration><![CDATA[METHOD Reset
+]]></Declaration>
+    </Method>
+    <Property Name="Size" Id="{055fb05f-bc3d-43b5-bc16-baeee001edf2}">
+      <Declaration><![CDATA[PROPERTY Size : UDINT]]></Declaration>
+      <Get Name="Get" Id="{5dd2b769-789e-41fa-84af-4288920eb036}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+  </Itf>
+</TcPlcObject>
