@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <POU Name="ProgramTask1" Id="{e90d93f6-babc-4924-ad7f-966aed5b6722}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM ProgramTask1
+VAR
+	fbSpscBuff 	: FB_SpscBuffer;
+	ipSpscBuff 	: I_SpscBuffer 		:= fbSpscBuff;
+	nCounter 	: UDINT;
+	bInit 		: BOOL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[nCounter := nCounter + 1;
+IF NOT(binit) THEN
+	bInit := TRUE;
+	ipSpscBuff.Initialize(SIZEOF(UDINT),100);
+END_IF
+
+ipSpscBuff.Push(ADR(nCounter),SIZEOF(nCounter));
+ipSpscBuff.Reset();]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

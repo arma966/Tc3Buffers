@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <POU Name="ProgramTask2" Id="{1bd251a5-443a-4986-869e-8395af033291}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM ProgramTask2
+VAR
+	nRead : udint;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[ProgramTask1.ipSpscBuff.Get(ADR(nRead),SIZEOF(nRead));
+]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

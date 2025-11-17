@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <Itf Name="I_SpscBuffer" Id="{c99df50e-d85d-49db-9b2a-956615e26b28}">
+    <Declaration><![CDATA[INTERFACE I_SpscBuffer
+]]></Declaration>
+    <Property Name="Capacity" Id="{74e5f4fb-c854-4aec-8dfd-467fbf66a0a3}">
+      <Declaration><![CDATA[PROPERTY Capacity : UDINT]]></Declaration>
+      <Get Name="Get" Id="{9b99bc61-6150-4aa6-bb76-0d9fea28faea}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Method Name="Clear" Id="{5ca14bc2-2bce-48a1-b9b9-b3f5b94ee5b4}">
+      <Declaration><![CDATA[METHOD Clear
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+    <Property Name="Empty" Id="{ec2ff1ec-537c-42d2-9ffc-80c6ca8b5245}">
+      <Declaration><![CDATA[PROPERTY Empty : bool]]></Declaration>
+      <Get Name="Get" Id="{8726a545-4f29-440e-b355-e0669d318b0f}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="Full" Id="{a9897bab-0747-4d6c-b4a5-473b00e24744}">
+      <Declaration><![CDATA[PROPERTY Full : bool]]></Declaration>
+      <Get Name="Get" Id="{c592efff-c880-4960-a443-f6b550b3ae72}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Method Name="Get" Id="{25bb8191-df61-414c-b6bf-731edf9f5b48}">
+      <Declaration><![CDATA[METHOD Get : BOOL
+VAR_INPUT
+	pDestination 	: pvoid;
+	cbSize 			: UDINT;
+END_VAR]]></Declaration>
+    </Method>
+    <Method Name="Initialize" Id="{f6f1f3a0-27ca-4d2d-88dd-ff200ca83243}">
+      <Declaration><![CDATA[METHOD Initialize : BOOL
+VAR_INPUT
+	nElementSize 		: UDINT;
+	nElementCapacity 	: UDINT;
+END_VAR]]></Declaration>
+    </Method>
+    <Method Name="Push" Id="{9efd7012-eac9-4a55-a179-b16e052d1641}">
+      <Declaration><![CDATA[METHOD Push : BOOL
+VAR_INPUT
+	pData : pvoid;
+	cbSize : UDINT;
+END_VAR]]></Declaration>
+    </Method>
+    <Method Name="Reset" Id="{75844e62-151e-410e-bfde-488e8008a937}">
+      <Declaration><![CDATA[METHOD Reset
+]]></Declaration>
+    </Method>
+    <Property Name="Size" Id="{f37009f0-0d21-4024-8039-9c5989d2a17f}">
+      <Declaration><![CDATA[PROPERTY Size : UDINT]]></Declaration>
+      <Get Name="Get" Id="{92bda758-e972-4f11-b02d-4b85e05e3e9e}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+  </Itf>
+</TcPlcObject>

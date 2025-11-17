@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <Task Name="CCTask1" Id="{95489cad-b0be-4c8c-a551-3c4403fad365}">
+    <!--CycleTime in micro seconds.-->
+    <CycleTime>2000</CycleTime>
+    <Priority>1</Priority>
+    <PouCall>
+      <Name>ProgramTask1</Name>
+    </PouCall>
+    <TaskFBGuid>{d11ac9a7-464d-454e-8591-e67421459fc3}</TaskFBGuid>
+    <Fb_init>{893462ea-19ca-40f8-9709-cf44efbd8143}</Fb_init>
+    <Fb_exit>{91ba5264-8a6a-42e3-b9ae-5226d944223b}</Fb_exit>
+    <CycleUpdate>{0c39f420-434e-4337-9543-995b8513f6c4}</CycleUpdate>
+    <PostCycleUpdate>{9ae7f843-01dc-4d9d-9f21-5973734ff892}</PostCycleUpdate>
+  </Task>
+</TcPlcObject>

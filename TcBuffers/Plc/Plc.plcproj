@@ -18,22 +18,34 @@
     <LibraryReferences>{beb0b588-2fd5-480c-8424-6575ca3becf2}</LibraryReferences>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="CCTask1.TcTTO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CCTask2.TcTTO">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="PlcTask.TcTTO">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Program\MAIN.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Src\Abstract\FB_VarByteBufferBase.TcPOU">
+    <Compile Include="Src\Base\FB_VarByteBufferBase.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Src\Abstract\I_VarByteBufferBase.TcIO">
+    <Compile Include="Src\Base\I_VarByteBufferBase.TcIO">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Src\SimpleDynBuffer\FB_SimpleRingBuffer.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Src\SimpleDynBuffer\I_SimpleRingBuffer.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Src\ThreadSafe\FB_SpscBuffer.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Src\ThreadSafe\I_SpscBuffer.TcIO">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Src\VarByteBuffer\FB_VarByteBuffer.TcPOU">
@@ -54,6 +66,12 @@
     <Compile Include="_test\SimpleRingBuffer\FB_TestSimpleDynBuffer.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="_test\ThreadSafe\ProgramTask1.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="_test\ThreadSafe\ProgramTask2.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="_test\VarStringBuffer\FB_TestVarStringBuffer.TcPOU">
       <SubType>Code</SubType>
     </Compile>
@@ -61,7 +79,8 @@
   <ItemGroup>
     <Folder Include="DUTs" />
     <Folder Include="GVLs" />
-    <Folder Include="Src\Abstract" />
+    <Folder Include="Src\Base" />
+    <Folder Include="Src\ThreadSafe" />
     <Folder Include="Src\VarStringBuffer" />
     <Folder Include="Src\VarByteBuffer" />
     <Folder Include="_test" />
@@ -69,6 +88,7 @@
     <Folder Include="Src\SimpleDynBuffer" />
     <Folder Include="VISUs" />
     <Folder Include="Program" />
+    <Folder Include="_test\ThreadSafe" />
     <Folder Include="_test\VarStringBuffer" />
     <Folder Include="_test\SimpleRingBuffer" />
     <Folder Include="_test\SimpleRingBuffer\DUT" />
